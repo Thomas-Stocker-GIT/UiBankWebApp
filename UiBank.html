@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UiBank</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet"/>
+<style>
+  :root {
+    --blue: #0067DF;
+    --orange: #FA4616;
+    --grad-start: #FA4616;
+    --grad-end: #0067DF;
+    --bg: #f5f7fa;
+  }
+  * { font-family: 'Poppins', sans-serif !important; }
+  body { background: var(--bg); margin: 0; }
+
+  /* ── NAV ── */
+  .navbar { background: #fff !important; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .navbar-brand img { height: 26px; margin-right: 8px; }
+  .nav-link { color: #333 !important; font-weight: 500; }
+  .nav-link:hover { color: var(--blue) !important; }
+  .navbar-toggler { border: none; }
+
+  /* ── GRADIENT HEADER ── */
+  .uibank-gradient {
+    background: linear-gradient(315deg, var(--grad-start) 0%, var(--grad-end) 74%);
+    border-radius: 10px 10px 0 0 !important;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-blue {
+    background: var(--blue) !important; color: #fff; border: 3px solid var(--blue);
+    border-radius: 10px; padding: 8px 22px; font-weight: 600;
+  }
+  .btn-blue:hover { background: #0055c0 !important; color: #fff; }
+  .btn-white {
+    background: #fff !important; color: var(--orange); border: 3px solid #fff;
+    border-radius: 10px; padding: 8px 22px; font-weight: 600;
+  }
+  .btn-white:hover { color: var(--blue); border-color: var(--orange); }
+  .btn-blue-outline {
+    background: #fff !important; color: var(--blue); border: 2px solid var(--blue);
+    border-radius: 10px; padding: 8px 22px; font-weight: 600; display: inline-block;
+    cursor: pointer; text-decoration: none !important;
+  }
+  .btn-blue-outline:hover { background: var(--blue) !important; color: #fff; }
+
+  /* ── CARDS ── */
+  .card { border: none !important; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+  .card-header { border-radius: 10px 10px 0 0 !important; }
+
+  /* ── JUMBOTRON ── */
+  .jumbotron { border-radius: 10px !important; margin-bottom: 1.5rem; }
+  .photo-bg {
+    background: linear-gradient(135deg, #1a2a4a 0%, #0067DF 60%, #FA4616 100%);
+    padding: 60px 30px;
+  }
+
+  /* ── SPACING ── */
+  .spacer { padding-top: 40px; }
+  .sm-spacer { padding-top: 20px; }
+
+  /* ── TEXT ── */
+  .text-blue { color: var(--blue) !important; }
+  .text-orange { color: var(--orange) !important; }
+  .text-gray { color: #aaa !important; }
+
+  /* ── ACCOUNT CARD ── */
+  .account-card {
+    border: 1px solid #e8ecf0; border-radius: 10px; padding: 18px 22px;
+    background: #fff; margin-bottom: 12px;
+  }
+
+  /* ── FORM ── */
+  .form-box { max-width: 480px; margin: 0 auto; }
+  .form-control { border-radius: 8px; border: 1.5px solid #dde; padding: 10px 14px; }
+  .form-control:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,103,223,.12); }
+
+  /* ── HELP CARD ── */
+  .help-card { border: 1px solid #e8ecf0 !important; border-radius: 8px; margin-bottom: 12px; }
+
+  /* ── TABLE ── */
+  .table th { background: var(--bg); color: #555; font-size: .85rem; font-weight: 600; }
+  .table td { font-size: .9rem; vertical-align: middle; }
+
+  /* ── MODAL ── */
+  .modal-content { border-radius: 12px; border: none; }
+  .modal-header { background: linear-gradient(315deg, var(--grad-start) 0%, var(--grad-end) 74%); border-radius: 12px 12px 0 0; }
+  .modal-title { color: #fff; font-weight: 600; }
+  .modal-header .close { color: #fff; opacity: .9; }
+
+  /* ── PAGES ── */
+  #app { display: flex; flex-direction: column; min-height: 100vh; }
+  #page { flex: 1; padding: 24px 0; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── FOOTER ── */
+  footer .jumbotron { background: #fff !important; margin-bottom: 0; }
+  footer .version { font-size: 10px; color: #ccc; text-align: center; padding: 6px; }
+
+  /* ── ALERT ── */
+  .alert-uibank { background: #fff3f0; border-left: 4px solid var(--orange); color: #c0392b; border-radius: 8px; padding: 10px 16px; margin-top: 12px; font-size: .9rem; }
+  .alert-success-uibank { background: #f0fff4; border-left: 4px solid #27ae60; color: #27ae60; border-radius: 8px; padding: 10px 16px; margin-top: 12px; font-size: .9rem; }
+
+  /* ── DROPDOWN ── */
+  .dropdown-menu { border-radius: 10px; border: 1px solid #e8ecf0; box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+  .dropdown-item:hover { background: var(--bg); color: var(--blue); }
+
+  /* ── HERO ICONS (emoji fallback) ── */
+  .hero-icon { font-size: 3rem; display: block; margin: 0 auto 12px; text-align: center; }
+
+  /* ── LOADER OVERLAY ── */
+  #loader { display:none; position:fixed; inset:0; background:rgba(255,255,255,.7); z-index:9999; align-items:center; justify-content:center; }
+  #loader.show { display:flex; }
+  .spinner { width:44px; height:44px; border:4px solid #e8ecf0; border-top-color:var(--blue); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══════════════════════════════ NAV ══════════════════════════════ -->
+<nav class="navbar navbar-expand-md">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#" onclick="nav('home')">
+      <span style="font-size:1.5rem;margin-right:8px">🏦</span>
+      <strong>UiBank</strong>
+    </a>
+    <button class="navbar-toggler" type="button" onclick="toggleNav()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse" id="navCollapse">
+      <ul class="navbar-nav ml-auto align-items-center">
+        <li class="nav-item" id="nav-accounts" style="display:none">
+          <a class="nav-link" href="#" onclick="nav('accounts')">Accounts</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="productsDD" data-toggle="dropdown">Products</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" onclick="nav('loans')">Loans</a>
+            <a class="dropdown-item" href="#" onclick="nav('credit-cards')">Credit Cards</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="nav('mobile-banking')">Mobile Banking</a>
+          </div>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="nav('help')">Help</a></li>
+        <li class="nav-item" id="nav-login"><a class="nav-link" href="#" onclick="nav('login')">Login</a></li>
+        <li class="nav-item" id="nav-profile" style="display:none"><a class="nav-link" href="#" onclick="nav('profile')">Profile</a></li>
+        <li class="nav-item" id="nav-logout" style="display:none">
+          <a class="nav-link" href="#" onclick="logout()">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════ PAGES ══════════════════════════════ -->
+<div id="page">
+<div class="container">
+
+<!-- ── HOME / WELCOME ── -->
+<div id="page-home" class="page">
+  <div class="jumbotron photo-bg mb-4">
+    <div class="row align-items-center">
+      <div id="home-guest" class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="sm-spacer"></div>
+            <form onsubmit="doLogin(event,'home')">
+              <div class="form-group">
+                <label>Username</label>
+                <input id="home-username" type="text" class="form-control" placeholder="Enter username"/>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input id="home-password" type="password" class="form-control" placeholder="Enter password"/>
+              </div>
+              <div id="home-login-err" class="alert-uibank" style="display:none"></div>
+              <div class="sm-spacer"></div>
+              <button type="submit" class="btn btn-blue btn-block">Sign In</button>
+              <div class="sm-spacer"></div>
+              <a href="#" onclick="nav('register')" style="font-size:.85rem; color:#555">Register For Account</a>
+            </form>
+            <div class="sm-spacer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 text-center" id="home-guest-text">
+        <h2 class="text-white"><strong>Get started with a UiBank checking or savings account today!</strong></h2>
+        <h5 class="text-white">*Open an account in the next 30 days and receive $50 on us!</h5>
+        <div class="spacer"></div>
+        <button onclick="nav('register')" class="btn btn-white btn-xl"><strong>Get Started</strong></button>
+      </div>
+      <div class="col-lg-12 text-center" id="home-loggedin" style="display:none">
+        <h2 class="text-white"><strong>Get started with a UiBank checking or savings account today!</strong></h2>
+        <h5 class="text-white">*Open a new account in the next 30 days and receive $50 on us!</h5>
+        <div class="spacer"></div>
+        <button onclick="nav('account-apply')" class="btn btn-white btn-xl">Apply Now</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="jumbotron" style="background:linear-gradient(315deg,#FA4616 0%,#0067DF 74%)">
+    <div class="row">
+      <div class="col-lg-4 col-12 mb-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <div class="sm-spacer"></div>
+            <span class="hero-icon">💰</span>
+            <h4>Checking and Savings Accounts</h4>
+            <div class="sm-spacer"></div>
+            <p class="text-blue">Open up an account with us today and take advantage of our special offer! Every new account created in 2024 gets $100 credit!*</p>
+            <div class="sm-spacer"></div>
+            <button onclick="nav('account-apply')" class="btn btn-blue-outline">Apply For Account</button>
+            <div class="sm-spacer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-12 mb-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <div class="sm-spacer"></div>
+            <span class="hero-icon">💳</span>
+            <h4>Credit and Debit Cards</h4>
+            <div class="sm-spacer"></div>
+            <p class="text-blue">We offer a variety of cards to meet your needs! Whether your focus is cash back, travel perks, or low fees, find the card that works for you!</p>
+            <div class="sm-spacer"></div>
+            <button onclick="nav('credit-cards')" class="btn btn-blue-outline">Learn More</button>
+            <div class="sm-spacer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-12 mb-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <div class="sm-spacer"></div>
+            <span class="hero-icon">📈</span>
+            <h4>Loans With Outstanding Rates</h4>
+            <div class="sm-spacer"></div>
+            <p class="text-blue">We offer the most competitive rates on the market! No hidden fees, no gimmicks, just a dedicated team with great rates and service!</p>
+            <div class="sm-spacer"></div>
+            <button onclick="nav('loans')" class="btn btn-blue-outline">Apply For Loan</button>
+            <div class="sm-spacer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOGIN ── -->
+<div id="page-login" class="page">
+  <div class="card shadow-sm" style="max-width:520px;margin:40px auto">
+    <div class="card-header uibank-gradient">
+      <a href="#" onclick="nav('home')" class="text-white"><strong>‹ Back</strong></a>
+    </div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <h1 class="text-center">Login</h1>
+      <p class="text-center text-muted">Hello! Log in with your username.</p>
+      <div class="sm-spacer"></div>
+      <form class="form-box" onsubmit="doLogin(event,'login')">
+        <div class="form-group">
+          <label>Username</label>
+          <input id="login-username" type="text" class="form-control" placeholder="Enter username"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="login-password" type="password" class="form-control" placeholder="Enter password"/>
+        </div>
+        <div id="login-err" class="alert-uibank" style="display:none"></div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue-outline btn-block">Sign In</button>
+      </form>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── REGISTER ── -->
+<div id="page-register" class="page">
+  <div class="card shadow-sm" style="max-width:560px;margin:30px auto">
+    <div class="card-header uibank-gradient">
+      <a href="#" onclick="history.back()" class="text-white"><strong>‹ Back</strong></a>
+    </div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <h1 class="text-center">Register</h1>
+      <p class="text-center text-muted">We'll need some information to get you started!</p>
+      <div class="sm-spacer"></div>
+      <form class="form-box" onsubmit="doRegister(event)">
+        <div class="form-group">
+          <label>First Name</label>
+          <input id="reg-firstName" type="text" class="form-control" placeholder="First name"/>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <select id="reg-title" class="form-control">
+            <option>ms</option><option>mrs</option><option>mr</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Middle Name or Initial</label>
+          <input id="reg-middleName" type="text" class="form-control" placeholder="Middle name"/>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input id="reg-lastName" type="text" class="form-control" placeholder="Last name"/>
+        </div>
+        <div class="form-group">
+          <label>Sex</label>
+          <select id="reg-gender" class="form-control">
+            <option value="male">Male</option><option value="female">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Employment Status</label>
+          <select id="reg-employment" class="form-control">
+            <option>Full-time</option><option>Part-time</option><option>Unemployed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Age</label>
+          <input id="reg-age" type="number" class="form-control" placeholder="Your age"/>
+        </div>
+        <div class="form-group">
+          <label>Marital Status</label>
+          <select id="reg-marital" class="form-control">
+            <option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Number of Dependents</label>
+          <input id="reg-dependents" type="number" class="form-control" placeholder="0"/>
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input id="reg-username" type="text" class="form-control" placeholder="Choose a username"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="reg-email" type="email" class="form-control" placeholder="email@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="reg-password" type="password" class="form-control" placeholder="Password"/>
+        </div>
+        <div id="reg-err" class="alert-uibank" style="display:none"></div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue-outline btn-block">Register</button>
+      </form>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ACCOUNTS ── -->
+<div id="page-accounts" class="page">
+  <div class="row">
+    <div class="col-lg-8 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-header uibank-gradient d-flex justify-content-between align-items-center py-3">
+          <div>
+            <h3 class="text-white mb-0">Welcome!</h3>
+            <p class="text-white mb-0" style="font-size:.9rem">Here is your account summary:</p>
+          </div>
+          <button onclick="nav('account-apply')" class="btn btn-white">Apply For New Account</button>
+        </div>
+        <div class="card-body" id="accounts-list">
+          <div class="sm-spacer"></div>
+          <p class="text-center text-muted">Loading accounts…</p>
+          <div class="sm-spacer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header uibank-gradient text-center py-3">
+          <h3 class="text-white mb-0">How Can We Help?</h3>
+        </div>
+        <div class="card-body">
+          <div class="card help-card mb-3">
+            <div class="card-header bg-white"><h5 class="mb-0">Payment Center</h5></div>
+            <div class="card-body text-center">
+              <a href="#" onclick="nav('transfer-money')" class="btn-blue-outline">Transfer Funds</a>
+            </div>
+          </div>
+          <div class="card help-card">
+            <div class="card-header bg-white"><h5 class="mb-0">Loan Center</h5></div>
+            <div class="card-body text-center">
+              <a href="#" onclick="nav('loans')" class="btn-blue-outline d-block mb-2">Apply For A Loan</a>
+              <div class="sm-spacer"></div>
+              <a href="#" onclick="nav('loan-lookup')" class="btn-blue-outline d-block">Loan Status</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ── ACCOUNT APPLY ── -->
+<div id="page-account-apply" class="page">
+  <div class="card shadow-sm" style="max-width:520px;margin:30px auto">
+    <div class="card-header uibank-gradient">
+      <a href="#" onclick="nav('accounts')" class="text-white"><strong>‹ Back</strong></a>
+    </div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <h1 class="text-center">Apply For A New Account</h1>
+      <p class="text-center text-muted">We need to gather some more details.</p>
+      <div class="sm-spacer"></div>
+      <form class="form-box" onsubmit="doCreateAccount(event)">
+        <div class="form-group">
+          <label>Give a Nickname to Your Account</label>
+          <input id="acct-nickname" type="text" class="form-control" placeholder="e.g. My Savings"/>
+        </div>
+        <div class="form-group">
+          <label>Type of Account</label>
+          <select id="acct-type" class="form-control">
+            <option value="checking">checking</option>
+            <option value="savings">savings</option>
+          </select>
+        </div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue-outline btn-block">Apply</button>
+        <div class="sm-spacer"></div>
+      </form>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ACCOUNT DETAILS ── -->
+<div id="page-account-details" class="page">
+  <div class="card shadow-sm">
+    <div class="card-header uibank-gradient">
+      <a href="#" onclick="nav('accounts')" class="text-white"><strong>‹ Back</strong></a>
+      <div class="sm-spacer"></div>
+      <h3 class="text-white mb-0" id="detail-title">Account – Transaction History</h3>
+      <p class="text-white mb-0">Current Account Balance: <strong id="detail-balance">$0.00</strong></p>
+      <hr style="border-color:rgba(255,255,255,.3)"/>
+      <div class="row text-center">
+        <div class="col-3"><a href="#" class="text-white" id="btn-dispute" onclick="gotoDispute()">Dispute Transaction</a></div>
+        <div class="col-3"><a href="#" class="text-white" onclick="nav('transfer-money')">Transfer Money</a></div>
+        <div class="col-3"><a href="#" class="text-white" onclick="downloadPDF()">Download Statement</a></div>
+        <div class="col-3"><a href="#" class="text-white" onclick="downloadCSV()">Download Transactions</a></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Date</th><th>Description</th><th>Amount</th><th>Balance</th>
+          </tr>
+        </thead>
+        <tbody id="txn-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ── TRANSFER MONEY ── -->
+<div id="page-transfer-money" class="page">
+  <div class="card shadow-sm" style="max-width:560px;margin:30px auto">
+    <div class="card-header uibank-gradient">
+      <a href="#" onclick="nav('accounts')" class="text-white"><strong>‹ Back</strong></a>
+      <div class="sm-spacer"></div>
+      <h3 class="text-white">Transfer Money</h3>
+    </div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <form class="form-box" id="transfer-form">
+        <div class="form-group">
+          <label>From</label>
+          <select id="transfer-from" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label>To</label>
+          <select id="transfer-to" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label>Amount ($)</label>
+          <input id="transfer-amount" type="number" min="0.01" step="0.01" class="form-control" placeholder="How much would you like to transfer?"/>
+        </div>
+        <div class="sm-spacer"></div>
+        <button type="button" class="btn btn-blue" onclick="reviewTransfer()" data-toggle="modal" data-target="#transferModal">Review</button>
+      </form>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Transfer Modal -->
+<div class="modal fade" id="transferModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Review Your Transfer</h5>
+        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body" id="transfer-modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-blue" onclick="submitTransfer()" data-dismiss="modal">Confirm Transfer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TRANSFER RESULT ── -->
+<div id="page-transfer-result" class="page">
+  <div class="card shadow-sm" style="max-width:520px;margin:40px auto">
+    <div class="card-body text-center">
+      <div class="spacer"></div>
+      <span style="font-size:4rem">✅</span>
+      <h1>Your transfer was successful!</h1>
+      <h4 class="text-muted">Your money is available immediately.</h4>
+      <div class="spacer"></div>
+      <button onclick="nav('accounts')" class="btn btn-blue">Back to Accounts</button>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOANS HOME ── -->
+<div id="page-loans" class="page">
+  <div class="jumbotron bg-white shadow-sm text-center">
+    <div class="sm-spacer"></div>
+    <span style="font-size:5rem">🏠</span>
+    <div class="sm-spacer"></div>
+    <h2>Financing for whatever life throws at you!</h2>
+    <p class="text-muted">Use our loan calculator to see if you qualify for a loan with UiBank</p>
+    <div class="spacer"></div>
+    <button onclick="nav('loan-apply')" class="btn btn-blue mr-2">Apply For A Loan</button>
+    <button onclick="nav('loan-lookup')" class="btn btn-blue">Already Have A Loan?</button>
+    <div class="sm-spacer"></div>
+  </div>
+</div>
+
+<!-- ── LOAN APPLY ── -->
+<div id="page-loan-apply" class="page">
+  <div class="card shadow-sm" style="max-width:560px;margin:30px auto">
+    <div class="card-header"><a href="#" onclick="nav('loans')"><strong>‹ Back</strong></a></div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <h1 class="text-center">Loan Application</h1>
+      <p class="text-center text-muted">Enter some details below to get started!</p>
+      <div class="sm-spacer"></div>
+      <form class="form-box" onsubmit="doLoanApply(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="loan-email" type="email" class="form-control" placeholder="Enter email address"/>
+        </div>
+        <div class="form-group">
+          <label>Loan Amount Requested ($)</label>
+          <input id="loan-amount" type="number" class="form-control" placeholder="e.g. 15000"/>
+        </div>
+        <div class="form-group">
+          <label>Loan Term (years)</label>
+          <select id="loan-term" class="form-control">
+            <option value="1">1</option><option value="3">3</option><option value="5">5</option><option value="10">10</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Current Yearly Income (Before Taxes)</label>
+          <input id="loan-income" type="number" class="form-control" placeholder="e.g. 50000"/>
+        </div>
+        <div class="form-group">
+          <label>Age</label>
+          <input id="loan-age" type="number" class="form-control" placeholder="Your age"/>
+        </div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue btn-block">Submit Loan Application</button>
+      </form>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOAN RESULT ── -->
+<div id="page-loan-result" class="page">
+  <div class="card shadow-sm" style="max-width:520px;margin:40px auto">
+    <div class="card-header"><a href="#" onclick="nav('loans')"><strong>‹ Back</strong></a></div>
+    <div class="card-body text-center">
+      <div class="spacer"></div>
+      <div id="loan-result-approved">
+        <span style="font-size:4rem">🎉</span>
+        <h1>Congrats!<br/>You've been approved!</h1>
+        <div class="spacer"></div>
+        <h5>With a fantastic rate of:</h5>
+        <h3 class="text-blue" id="loan-result-rate"></h3>
+        <div class="sm-spacer"></div>
+        <h5>Your new Loan ID is:</h5>
+        <h4 class="text-blue" id="loan-result-id"></h4>
+        <div class="spacer"></div>
+        <button onclick="nav('loan-apply')" class="btn btn-blue-outline">Apply For Another Loan</button>
+      </div>
+      <div id="loan-result-denied" style="display:none">
+        <span style="font-size:4rem">😞</span>
+        <h1 class="text-orange">Sorry, you have not been approved for a loan.</h1>
+        <h4 class="text-muted">You must be at least 18 years old and the loan must not exceed $100k.</h4>
+        <div class="spacer"></div>
+        <button onclick="nav('loan-apply')" class="btn btn-blue-outline">Try Again</button>
+      </div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOAN LOOKUP ── -->
+<div id="page-loan-lookup" class="page">
+  <div class="card shadow-sm" style="max-width:520px;margin:40px auto">
+    <div class="card-header"><a href="#" onclick="nav('loans')"><strong>‹ Back</strong></a></div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <h1 class="text-center">Loan Lookup</h1>
+      <p class="text-center text-muted">Enter your Loan ID to retrieve the details.</p>
+      <div class="sm-spacer"></div>
+      <form class="form-box" onsubmit="doLoanLookup(event)">
+        <div class="form-group">
+          <label>Enter Your Loan ID:</label>
+          <input id="lookup-id" type="text" class="form-control" placeholder="e.g. Q-ABC12345"/>
+        </div>
+        <div id="lookup-err" class="alert-uibank" style="display:none"></div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue btn-block">Retrieve Loan Details</button>
+      </form>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOAN DETAILS ── -->
+<div id="page-loan-details" class="page">
+  <div class="card shadow-sm" style="max-width:520px;margin:40px auto">
+    <div class="card-header"><a href="#" onclick="nav('loan-lookup')"><strong>‹ Back</strong></a></div>
+    <div class="card-body">
+      <div class="spacer"></div>
+      <h1 class="text-center">Your Loan Details</h1>
+      <div class="spacer"></div>
+      <div id="loan-details-body"></div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROFILE ── -->
+<div id="page-profile" class="page">
+  <div class="card shadow-sm" style="max-width:680px;margin:30px auto">
+    <div class="card-header uibank-gradient py-3">
+      <h3 class="text-white mb-0" id="profile-greeting">Hello!</h3>
+      <p class="text-white mb-0">Profile Details:</p>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-8" id="profile-fields"></div>
+        <div class="col-4 text-center pt-3">
+          <span id="profile-icon" style="font-size:6rem">👤</span>
+          <div class="sm-spacer"></div>
+          <button onclick="nav('edit-profile')" class="btn btn-blue-outline btn-sm">Edit Profile</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sm-spacer"></div>
+</div>
+
+<!-- ── EDIT PROFILE ── -->
+<div id="page-edit-profile" class="page">
+  <div class="card shadow-sm" style="max-width:680px;margin:30px auto">
+    <div class="card-header uibank-gradient py-3">
+      <a href="#" onclick="nav('profile')" class="text-white"><strong>‹ Back</strong></a>
+      <div class="sm-spacer"></div>
+      <h3 class="text-white mb-0" id="edit-greeting">Hello!</h3>
+      <p class="text-white mb-0">Edit Your Profile Details:</p>
+    </div>
+    <div class="card-body">
+      <form class="form-box" onsubmit="doUpdateProfile(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input id="edit-username" type="text" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>First Name</label>
+          <input id="edit-firstName" type="text" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input id="edit-lastName" type="text" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input id="edit-email" type="email" class="form-control"/>
+        </div>
+        <div id="edit-msg" class="alert-success-uibank" style="display:none">Profile updated!</div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue">Save Changes</button>
+        <button type="button" onclick="nav('profile')" class="btn btn-outline-secondary ml-2">Cancel</button>
+        <div class="sm-spacer"></div>
+      </form>
+    </div>
+  </div>
+  <div class="sm-spacer"></div>
+</div>
+
+<!-- ── CREDIT CARDS ── -->
+<div id="page-credit-cards" class="page">
+  <div class="card shadow-sm text-center mb-4">
+    <div class="card-body">
+      <div class="spacer"></div>
+      <span style="font-size:5rem">💳</span>
+      <div class="spacer"></div>
+      <h2>Options. Options. Options.</h2>
+      <h4 class="text-blue">Travel? Cash Back? Rewards? We have you covered!</h4>
+      <div class="spacer"></div>
+    </div>
+  </div>
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-2 text-center"><span style="font-size:3.5rem">✈️</span></div>
+        <div class="col-7">
+          <h4>UiBank Travel Rewards Card</h4>
+          <p class="text-blue mb-0">3x miles on any dining, clothing, or entertainment purchase</p>
+        </div>
+        <div class="col-3 text-center">
+          <button onclick="alert('Credit card application submitted! We will contact you soon.')" class="btn btn-blue">Apply Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-2 text-center"><span style="font-size:3.5rem">💵</span></div>
+        <div class="col-7">
+          <h4>UiBank Cash Back Rewards Card</h4>
+          <p class="text-blue mb-0">1.5% back on all purchases, plain and simple</p>
+        </div>
+        <div class="col-3 text-center">
+          <button onclick="alert('Credit card application submitted! We will contact you soon.')" class="btn btn-blue">Apply Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-2 text-center"><span style="font-size:3.5rem">🎁</span></div>
+        <div class="col-7">
+          <h4>UiBank Treat Yo Self Rewards Card</h4>
+          <p class="text-blue mb-0">Ride shares and entertainment purchases get you 3 points per dollar</p>
+        </div>
+        <div class="col-3 text-center">
+          <button onclick="alert('Credit card application submitted! We will contact you soon.')" class="btn btn-blue">Apply Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ── MOBILE BANKING ── -->
+<div id="page-mobile-banking" class="page">
+  <div class="card shadow-sm text-center">
+    <div class="card-body">
+      <div class="spacer"></div>
+      <span style="font-size:5rem">📱</span>
+      <div class="spacer"></div>
+      <h2>Mobile Banking</h2>
+      <p class="text-muted">Bank wherever you are with the UiBank mobile app.<br/>Available on iOS and Android.</p>
+      <div class="spacer"></div>
+      <button class="btn btn-blue mr-2" onclick="alert('App Store coming soon!')">📱 App Store</button>
+      <button class="btn btn-blue" onclick="alert('Google Play coming soon!')">🤖 Google Play</button>
+      <div class="spacer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HELP ── -->
+<div id="page-help" class="page">
+  <div class="jumbotron photo-bg mb-4 text-center">
+    <div class="spacer"></div>
+    <h2 class="text-white">Need Some Help?</h2>
+    <p class="text-white">Get in touch with our team!</p>
+    <div class="spacer"></div>
+  </div>
+  <div class="card shadow-sm" style="max-width:560px;margin:0 auto">
+    <div class="card-body">
+      <div class="sm-spacer"></div>
+      <h3 class="text-center">Help Us With The Details</h3>
+      <div class="sm-spacer"></div>
+      <form class="form-box" onsubmit="doHelp(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input id="help-name" type="text" class="form-control" placeholder="Enter full name"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="help-email" type="email" class="form-control" placeholder="your@email.com"/>
+        </div>
+        <div class="form-group">
+          <label>Tell Us About Your Problem</label>
+          <textarea id="help-msg" class="form-control" rows="4" placeholder="How can we help?"></textarea>
+        </div>
+        <div class="sm-spacer"></div>
+        <button type="submit" class="btn btn-blue-outline btn-block">Contact Us</button>
+      </form>
+      <div class="sm-spacer"></div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+<!-- ── DISPUTE ── -->
+<div id="page-dispute" class="page">
+  <div class="card shadow-sm">
+    <div class="card-header uibank-gradient">
+      <a href="#" onclick="nav('accounts')" class="text-white"><strong>‹ Back</strong></a>
+      <div class="sm-spacer"></div>
+      <h3 class="text-white">Manage Disputes</h3>
+    </div>
+    <div class="card-body">
+      <div class="sm-spacer"></div>
+      <h2>We are here to help!</h2>
+      <p>File a new dispute or check the status of existing disputes.</p>
+      <p>Select your account and we'll show you the transactions you can dispute.</p>
+      <hr/>
+      <div class="sm-spacer"></div>
+      <div class="form-group">
+        <label>Select Account:</label>
+        <select id="dispute-account-select" class="form-control"></select>
+      </div>
+      <div class="sm-spacer"></div>
+      <div id="dispute-txn-list"></div>
+      <div class="sm-spacer"></div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+</div>
+
+</div><!-- /container -->
+</div><!-- /page -->
+
+<!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
+<footer>
+  <div class="jumbotron shadow-sm mb-0">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-6 text-center">
+          <a href="#" onclick="nav('home')" class="text-dark text-decoration-none">
+            <span style="font-size:2rem">🏦</span><br/><strong>UiBank</strong>
+          </a>
+        </div>
+        <div class="col-6 text-center">
+          <ul style="list-style:none;padding:0;margin:0">
+            <li><a href="#" onclick="nav('loans')">Need a Loan?</a></li>
+            <li><a href="#" onclick="nav('help')">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="version">UiBank v.2024.1.0</div>
+</footer>
+
+</div><!-- /app -->
+<div id="loader"><div class="spinner"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// LOCALDB — all data lives in localStorage
+// ═══════════════════════════════════════════════════════════════════════════
+const DB = {
+  _load(k)    { try { return JSON.parse(localStorage.getItem(k)||'[]'); } catch { return []; } },
+  _save(k,v)  { localStorage.setItem(k, JSON.stringify(v)); },
+  _get(k)     { try { return JSON.parse(localStorage.getItem(k)||'null'); } catch { return null; } },
+  _set(k,v)   { localStorage.setItem(k, JSON.stringify(v)); },
+
+  uuid()      { return Math.random().toString(36).substr(2,9)+Math.random().toString(36).substr(2,9); },
+  now()       { return new Date().toISOString(); },
+  fmt$: n     => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n),
+
+  // USERS
+  getUsers()          { return this._load('uibank_users'); },
+  getUserById(id)     { return this.getUsers().find(u=>u.id===id)||null; },
+  getUserByUsername(u){ return this.getUsers().find(x=>x.username===u)||null; },
+  createUser(p)       { const u={...p,id:this.uuid(),locked:false,emailVerified:false};
+                        const arr=this.getUsers(); arr.push(u); this._save('uibank_users',arr); return u; },
+  updateUser(u)       { this._save('uibank_users',this.getUsers().map(x=>x.id===u.id?u:x)); return u; },
+
+  // SESSIONS
+  createSession(uid)  { const t='tok_'+this.uuid(); localStorage.setItem('uibank_sess_'+t,uid); return t; },
+  getUidFromToken(t)  { return localStorage.getItem('uibank_sess_'+t)||null; },
+  deleteSession(t)    { localStorage.removeItem('uibank_sess_'+t); },
+
+  // ACCOUNTS
+  getAccounts()            { return this._load('uibank_accounts'); },
+  getAccountsByUid(uid)    { return this.getAccounts().filter(a=>a.userId===uid); },
+  getAccountById(id)       { return this.getAccounts().find(a=>a.id===id)||null; },
+  createAccount(p)         { const a={...p,id:this.uuid()};
+                             const arr=this.getAccounts(); arr.push(a); this._save('uibank_accounts',arr); return a; },
+  updateAccount(a)         { this._save('uibank_accounts',this.getAccounts().map(x=>x.id===a.id?a:x)); return a; },
+
+  // TRANSACTIONS
+  getTxns()                { return this._load('uibank_transactions'); },
+  getTxnsByAcct(aid)       { return this.getTxns().filter(t=>t.accountId===aid); },
+  createTxn(p)             { const t={...p,id:this.uuid()};
+                             const arr=this.getTxns(); arr.push(t); this._save('uibank_transactions',arr); return t; },
+  updateTxn(t)             { this._save('uibank_transactions',this.getTxns().map(x=>x.id===t.id?t:x)); return t; },
+
+  // LOANS
+  getLoans()               { return this._load('uibank_loans'); },
+  getLoanByQuoteId(qid)    { return this.getLoans().find(l=>l.quoteID===qid)||null; },
+  createLoan(p)            { const qid='Q-'+this.uuid().toUpperCase().substr(0,8);
+                             const l={...p,quoteID:qid};
+                             const arr=this.getLoans(); arr.push(l); this._save('uibank_loans',arr); return l; },
+
+  // SEED
+  seed() {
+    if(this.getUsers().length>0) return;
+    const u = this.createUser({
+      firstName:'Demo', lastName:'User', username:'demo', password:'demo',
+      email:'demo@uibank.com', gender:'male', title:'mr', type:'customer',
+      age:30, employmentStatus:'Full-time', maritalStatus:'Single', numDependents:'0'
+    });
+    const checking = this.createAccount({
+      friendlyName:'My Checking', type:'checking', balance:2450.75,
+      userId:u.id, accountNumber:10203040, sortCode:'10-20-30'
+    });
+    const savings = this.createAccount({
+      friendlyName:'My Savings', type:'savings', balance:8120.00,
+      userId:u.id, accountNumber:50607080, sortCode:'50-60-70'
+    });
+    const d=(n)=>{ const dt=new Date(); dt.setDate(dt.getDate()-n); return dt.toISOString(); };
+    [
+      {accountId:checking.id,amount:1500,  description:'Payroll Deposit',         type:'credit',balance:2450.75,date:d(1), dispute:'ok'},
+      {accountId:checking.id,amount:49.99, description:'Netflix Subscription',    type:'debit', balance:2400.76,date:d(3), dispute:'ok'},
+      {accountId:checking.id,amount:120,   description:'Grocery Store',           type:'debit', balance:2280.76,date:d(5), dispute:'ok'},
+      {accountId:checking.id,amount:200,   description:'ATM Withdrawal',          type:'debit', balance:2080.76,date:d(8), dispute:'ok'},
+      {accountId:checking.id,amount:370,   description:'Monthly Rent',            type:'debit', balance:1710.76,date:d(10),dispute:'ok'},
+      {accountId:savings.id, amount:500,   description:'Transfer from Checking',  type:'credit',balance:8120,   date:d(2), dispute:'ok'},
+      {accountId:savings.id, amount:1000,  description:'Bonus Deposit',           type:'credit',balance:7620,   date:d(15),dispute:'ok'},
+      {accountId:savings.id, amount:75,    description:'Savings Interest',        type:'credit',balance:6620,   date:d(30),dispute:'ok'},
+    ].forEach(t=>this.createTxn(t));
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SESSION HELPERS
+// ═══════════════════════════════════════════════════════════════════════════
+function currentUserId() { return localStorage.getItem('userId'); }
+function isLoggedIn()    { return !!currentUserId(); }
+function currentUser()   { return DB.getUserById(currentUserId()); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════
+let _activeAccountId = null;
+
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if(el) el.classList.add('active');
+  window.scrollTo(0,0);
+  updateNav();
+  // page-specific init
+  if(page==='home')          initHome();
+  if(page==='accounts')      initAccounts();
+  if(page==='account-details') initAccountDetails();
+  if(page==='transfer-money')  initTransfer();
+  if(page==='profile')       initProfile();
+  if(page==='edit-profile')  initEditProfile();
+  if(page==='dispute')       initDispute();
+  return false;
+}
+
+function toggleNav() {
+  const c=document.getElementById('navCollapse');
+  c.classList.toggle('show');
+}
+
+function updateNav() {
+  const li=isLoggedIn();
+  document.getElementById('nav-accounts').style.display = li?'':'none';
+  document.getElementById('nav-login').style.display    = li?'none':'';
+  document.getElementById('nav-profile').style.display  = li?'':'none';
+  document.getElementById('nav-logout').style.display   = li?'':'none';
+}
+
+function logout() {
+  const tok=localStorage.getItem('sessionToken');
+  if(tok) DB.deleteSession(tok);
+  localStorage.removeItem('sessionToken');
+  localStorage.removeItem('userId');
+  nav('home');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PAGE INITS
+// ═══════════════════════════════════════════════════════════════════════════
+function initHome() {
+  const li=isLoggedIn();
+  document.getElementById('home-guest').style.display       = li?'none':'';
+  document.getElementById('home-guest-text').style.display  = li?'none':'';
+  document.getElementById('home-loggedin').style.display    = li?'':'none';
+  document.getElementById('home-login-err').style.display   = 'none';
+  document.getElementById('home-username').value='';
+  document.getElementById('home-password').value='';
+}
+
+function initAccounts() {
+  const uid=currentUserId();
+  const accts=DB.getAccountsByUid(uid);
+  const el=document.getElementById('accounts-list');
+  if(accts.length===0) {
+    el.innerHTML='<div class="sm-spacer"></div><p class="text-center text-muted">No accounts yet. Apply for a new account today!</p><div class="sm-spacer"></div>';
+    return;
+  }
+  el.innerHTML = accts.map(a=>`
+    <div class="account-card d-flex justify-content-between align-items-center">
+      <div>
+        <a class="text-blue font-weight-bold" href="#" onclick="openAccount('${a.id}')">${a.friendlyName}</a><br/>
+        <span class="text-gray" style="font-size:.85rem">……${a.id.slice(-4)}</span>
+      </div>
+      <div class="text-right">
+        <small class="text-muted d-block">Account Balance:</small>
+        <strong>${DB.fmt$(a.balance)}</strong>
+      </div>
+    </div>
+  `).join('') + '<div class="sm-spacer"></div>';
+}
+
+function openAccount(id) {
+  _activeAccountId = id;
+  nav('account-details');
+  return false;
+}
+
+function initAccountDetails() {
+  if(!_activeAccountId) { nav('accounts'); return; }
+  const a=DB.getAccountById(_activeAccountId);
+  if(!a) { nav('accounts'); return; }
+  document.getElementById('detail-title').textContent   = a.friendlyName+' – Transaction History';
+  document.getElementById('detail-balance').textContent = DB.fmt$(a.balance);
+  const txns=DB.getTxnsByAcct(_activeAccountId).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const tbody=document.getElementById('txn-table-body');
+  if(txns.length===0) {
+    tbody.innerHTML='<tr><td colspan="4" class="text-center text-muted">No transactions yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=txns.map(t=>`
+    <tr>
+      <td>${new Date(t.date).toLocaleDateString()}</td>
+      <td>${t.description||'—'}</td>
+      <td style="color:${t.type==='credit'?'green':'red'}">${DB.fmt$(t.amount)}</td>
+      <td>${DB.fmt$(t.balance)}</td>
+    </tr>
+  `).join('');
+}
+
+function gotoDispute() {
+  nav('dispute');
+  return false;
+}
+
+function initTransfer() {
+  const accts=DB.getAccountsByUid(currentUserId());
+  const mkOpts=sel=>{
+    sel.innerHTML='';
+    accts.forEach(a=>{
+      const o=document.createElement('option');
+      o.value=a.id; o.textContent=`${a.friendlyName} – ${DB.fmt$(a.balance)}`;
+      sel.appendChild(o);
+    });
+  };
+  mkOpts(document.getElementById('transfer-from'));
+  mkOpts(document.getElementById('transfer-to'));
+  document.getElementById('transfer-amount').value='';
+}
+
+function reviewTransfer() {
+  const fromSel=document.getElementById('transfer-from');
+  const toSel  =document.getElementById('transfer-to');
+  const amt    =parseFloat(document.getElementById('transfer-amount').value)||0;
+  const from   =DB.getAccountById(fromSel.value);
+  const to     =DB.getAccountById(toSel.value);
+  document.getElementById('transfer-modal-body').innerHTML=`
+    <p><strong class="text-blue">From ${from.friendlyName}</strong><br/><span class="text-muted">Current Balance: ${DB.fmt$(from.balance)}</span></p>
+    <p><strong class="text-blue">To ${to.friendlyName}</strong><br/><span class="text-muted">Current Balance: ${DB.fmt$(to.balance)}</span></p>
+    <p><strong>Total to transfer:</strong> <span>${DB.fmt$(amt)}</span></p>
+  `;
+}
+
+function submitTransfer() {
+  const fromId=document.getElementById('transfer-from').value;
+  const toId  =document.getElementById('transfer-to').value;
+  const amt   =parseFloat(document.getElementById('transfer-amount').value)||0;
+  const from  =DB.getAccountById(fromId);
+  const to    =DB.getAccountById(toId);
+  if(!from||!to||amt<=0) { alert('Please fill in all fields.'); return; }
+  if(from.id===to.id)    { alert('From and To accounts must be different.'); return; }
+  if(from.balance<amt)   { alert('Insufficient funds.'); return; }
+  const now=DB.now();
+  from.balance=Math.round((from.balance-amt)*100)/100;
+  to.balance  =Math.round((to.balance  +amt)*100)/100;
+  DB.updateAccount(from);
+  DB.updateAccount(to);
+  DB.createTxn({accountId:fromId,amount:amt,description:'Transfer sent',type:'debit', balance:from.balance,date:now,dispute:'ok'});
+  DB.createTxn({accountId:toId,  amount:amt,description:'Transfer received',type:'credit',balance:to.balance,  date:now,dispute:'ok'});
+  nav('transfer-result');
+}
+
+function initProfile() {
+  const u=currentUser();
+  if(!u) return;
+  document.getElementById('profile-greeting').textContent='Hello '+u.firstName+'!';
+  document.getElementById('profile-icon').textContent=u.gender==='female'?'👩':'👨';
+  document.getElementById('profile-fields').innerHTML=[
+    ['Username',u.username],['First Name',u.firstName],['Last Name',u.lastName],
+    ['Email',u.email],['Age',u.age||'N/A'],['User ID',u.id]
+  ].map(([l,v])=>`
+    <label style="color:gray;font-size:12px">${l}</label>
+    <h5><strong>${v}</strong></h5>
+  `).join('');
+}
+
+function initEditProfile() {
+  const u=currentUser();
+  if(!u) return;
+  document.getElementById('edit-greeting').textContent='Hello '+u.firstName+'!';
+  document.getElementById('edit-username').value =u.username||'';
+  document.getElementById('edit-firstName').value=u.firstName||'';
+  document.getElementById('edit-lastName').value =u.lastName||'';
+  document.getElementById('edit-email').value    =u.email||'';
+  document.getElementById('edit-msg').style.display='none';
+}
+
+function doUpdateProfile(e) {
+  e.preventDefault();
+  const u=currentUser();
+  u.username  =document.getElementById('edit-username').value;
+  u.firstName =document.getElementById('edit-firstName').value;
+  u.lastName  =document.getElementById('edit-lastName').value;
+  u.email     =document.getElementById('edit-email').value;
+  DB.updateUser(u);
+  document.getElementById('edit-msg').style.display='';
+  setTimeout(()=>nav('profile'),900);
+}
+
+function initDispute() {
+  const accts=DB.getAccountsByUid(currentUserId());
+  const sel=document.getElementById('dispute-account-select');
+  sel.innerHTML=accts.map(a=>`<option value="${a.id}">${a.friendlyName} – ${DB.fmt$(a.balance)}</option>`).join('');
+  sel.onchange=renderDisputeTxns;
+  renderDisputeTxns();
+}
+
+function renderDisputeTxns() {
+  const sel=document.getElementById('dispute-account-select');
+  const aid=sel.value;
+  const txns=DB.getTxnsByAcct(aid).filter(t=>t.dispute!=='resolved');
+  const el=document.getElementById('dispute-txn-list');
+  if(txns.length===0){el.innerHTML='<p class="text-muted">No disputable transactions.</p>';return;}
+  el.innerHTML=`
+    <h5>Transactions for this account:</h5>
+    <table class="table table-sm table-bordered">
+      <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        ${txns.map(t=>`
+          <tr>
+            <td>${new Date(t.date).toLocaleDateString()}</td>
+            <td>${t.description}</td>
+            <td style="color:${t.type==='credit'?'green':'red'}">${DB.fmt$(t.amount)}</td>
+            <td><span class="badge badge-${t.dispute==='reported'?'warning':'secondary'}">${t.dispute}</span></td>
+            <td>${t.dispute==='ok'?`<button class="btn btn-sm btn-blue-outline" onclick="disputeTxn('${t.id}')">Dispute</button>`:'—'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function disputeTxn(id) {
+  const t=DB.getTxns().find(x=>x.id===id);
+  if(t){ t.dispute='reported'; DB.updateTxn(t); renderDisputeTxns(); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+function doLogin(e, source) {
+  e.preventDefault();
+  const un = source==='home'
+    ? document.getElementById('home-username').value
+    : document.getElementById('login-username').value;
+  const pw = source==='home'
+    ? document.getElementById('home-password').value
+    : document.getElementById('login-password').value;
+  const errEl = document.getElementById(source==='home'?'home-login-err':'login-err');
+  const user=DB.getUserByUsername(un);
+  if(!user||user.password!==pw) {
+    errEl.textContent='Invalid username or password.';
+    errEl.style.display='';
+    return;
+  }
+  if(user.locked) {
+    errEl.textContent='This account is locked.';
+    errEl.style.display='';
+    return;
+  }
+  const tok=DB.createSession(user.id);
+  localStorage.setItem('sessionToken',tok);
+  localStorage.setItem('userId',user.id);
+  nav('accounts');
+}
+
+function doRegister(e) {
+  e.preventDefault();
+  const un=document.getElementById('reg-username').value.trim();
+  const errEl=document.getElementById('reg-err');
+  if(!un){ errEl.textContent='Username is required.'; errEl.style.display=''; return; }
+  if(DB.getUserByUsername(un)){ errEl.textContent='Username already taken.'; errEl.style.display=''; return; }
+  const u=DB.createUser({
+    firstName: document.getElementById('reg-firstName').value,
+    middleName:document.getElementById('reg-middleName').value,
+    lastName:  document.getElementById('reg-lastName').value,
+    title:     document.getElementById('reg-title').value,
+    gender:    document.getElementById('reg-gender').value,
+    age:       parseInt(document.getElementById('reg-age').value)||0,
+    employmentStatus:document.getElementById('reg-employment').value,
+    maritalStatus:   document.getElementById('reg-marital').value,
+    numDependents:   document.getElementById('reg-dependents').value,
+    username:  un,
+    email:     document.getElementById('reg-email').value,
+    password:  document.getElementById('reg-password').value,
+    type:'customer'
+  });
+  const tok=DB.createSession(u.id);
+  localStorage.setItem('sessionToken',tok);
+  localStorage.setItem('userId',u.id);
+  nav('accounts');
+}
+
+function doCreateAccount(e) {
+  e.preventDefault();
+  const nick=document.getElementById('acct-nickname').value.trim();
+  const type=document.getElementById('acct-type').value;
+  if(!nick){ alert('Please enter a nickname.'); return; }
+  const a=DB.createAccount({
+    friendlyName: nick, type, balance:100,
+    userId: currentUserId(),
+    accountNumber: Math.floor(Math.random()*90000000)+10000000,
+    sortCode:'00-00-00'
+  });
+  DB.createTxn({
+    accountId:a.id, amount:100, description:'Initial Deposit – Welcome to UiBank!',
+    type:'credit', balance:100, date:DB.now(), dispute:'ok'
+  });
+  alert(`Account "${nick}" created! Starting balance: $100.00`);
+  nav('accounts');
+}
+
+function doLoanApply(e) {
+  e.preventDefault();
+  const income=parseFloat(document.getElementById('loan-income').value)||0;
+  const age   =parseInt(document.getElementById('loan-age').value)||0;
+  const amount=parseFloat(document.getElementById('loan-amount').value)||0;
+  const term  =parseInt(document.getElementById('loan-term').value)||1;
+  const email =document.getElementById('loan-email').value;
+  const accepted = income>20000 && age>=18 && amount<=100000;
+  let rate = 5.0+(amount/10000)*0.5-(term*0.1);
+  rate = Math.max(2.5, Math.round(rate*100)/100);
+  const loan=DB.createLoan({email,amount,term,income,age,accepted,rate:accepted?rate:0});
+  document.getElementById('loan-result-approved').style.display = accepted?'':'none';
+  document.getElementById('loan-result-denied').style.display   = accepted?'none':'';
+  document.getElementById('loan-result-rate').textContent       = accepted?rate+'% APR':'';
+  document.getElementById('loan-result-id').textContent         = accepted?loan.quoteID:'';
+  nav('loan-result');
+}
+
+function doLoanLookup(e) {
+  e.preventDefault();
+  const qid=document.getElementById('lookup-id').value.trim();
+  const errEl=document.getElementById('lookup-err');
+  const loan=DB.getLoanByQuoteId(qid);
+  if(!loan){ errEl.textContent='No loan found with that ID.'; errEl.style.display=''; return; }
+  errEl.style.display='none';
+  document.getElementById('loan-details-body').innerHTML=`
+    <h5>Email: <span class="text-blue">${loan.email||'N/A'}</span></h5>
+    <h5>Loan ID: <span class="text-blue">${loan.quoteID}</span></h5>
+    <h5>Term: <span class="text-blue">${loan.term} year(s)</span></h5>
+    <h5>Loan Amount: <span class="text-blue">${DB.fmt$(loan.amount)}</span></h5>
+    <h5>Rate: <span class="text-blue">${loan.rate}%</span></h5>
+    <h5>Age: <span class="text-blue">${loan.age}</span></h5>
+    <h5>Yearly Income: <span class="text-blue">${DB.fmt$(loan.income)}</span></h5>
+    <h5>Status: <span class="text-blue">${loan.accepted?'✅ Approved':'❌ Denied'}</span></h5>
+  `;
+  nav('loan-details');
+}
+
+function doHelp(e) {
+  e.preventDefault();
+  alert('Thank you! Your message has been received. We\'ll be in touch shortly.');
+  nav('home');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CSV / PDF DOWNLOAD (basic)
+// ═══════════════════════════════════════════════════════════════════════════
+function downloadCSV() {
+  if(!_activeAccountId) return;
+  const txns=DB.getTxnsByAcct(_activeAccountId);
+  const rows=[['Date','Description','Type','Amount','Balance'],
+    ...txns.map(t=>[new Date(t.date).toLocaleDateString(),t.description,t.type,t.amount,t.balance])];
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='transactions.csv'; a.click();
+}
+
+function downloadPDF() {
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════════════════════
+DB.seed();
+nav('home');
+</script>
+</body>
+</html>
